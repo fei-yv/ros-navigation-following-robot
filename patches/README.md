@@ -6,7 +6,7 @@
 
 | 补丁 | 应用对象 | 说明 |
 |---|---|---|
-| `firmware-c30d-r550.patch` | Keil 固件工程 | 基于 `R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26` 版本 |
+| `firmware-c30d-r550.patch` | Keil 固件工程 | 基于用户提供的 `R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26_副本_20260802` 实际工程验证 |
 | `ros-noetic-c30d.patch` | ROS Noetic 源码包 | 修改 `turn_on_wheeltec_robot` 功能包 |
 
 应用前建议先用 `git apply --check <补丁>` 验证你的官方源码版本与补丁基线一致；如果官方版本更新导致补丁应用失败，可按 `docs/firmware.md` 中的"文件 + 函数 + 变量"定位信息手工对齐。
@@ -23,10 +23,9 @@ git apply firmware-c30d-r550.patch    # git apply 对普通目录同样可用
 
 | 文件 | 修改内容 |
 |---|---|
-| `BALANCE/robot_select_init.c` / `.h` | 差速车型参数适配：减速比 30:1 → 19:1、编码器 13 → 11 线、轮距 0.16 → 0.30 m、轮径 65 mm |
-| `BALANCE/system.c` | `RC_Velocity` 速度默认值/初始化（差速车型） |
-| `BALANCE/balance.c` | 差速运动模型与控制相关修改 |
-| `HARDWARE/usartx.c` | ROS/UART3 通信：100 Hz × 30 帧 ≈ 300 ms 超时停车，并增加计数器防溢出 |
+| `BALANCE/robot_select_init.c` / `.h` | 差速车型参数适配：减速比 19:1、编码器 11 线、轮距 0.30 m、轮径 65 mm；通过 `Robot_Select()` 的差速分支传入参数 |
+| `BALANCE/balance.c` | ROS 控制帧约 300 ms 超时停车、计数器饱和，以及差速车编码器方向修正 |
+| `HARDWARE/usartx.c` | 有效 ROS 控制帧清零超时计数，并过滤 JDY-31 的连接状态回显 |
 | `USER/WHEELTEC.uvoptx` / `.uvprojx` | Keil 目标芯片改为 STM32F407VET6 等工程配置 |
 
 各参数的具体函数名、变量名定位见 [固件参数配置](../docs/firmware.md)。
