@@ -115,11 +115,6 @@ Plan B：USART1 或 UART5 在源码中也以 115200 初始化，可临时验证�
 - 若 AMCL 无 `/amcl_pose` 或 RViz Fixed Frame 为 `map` 时没有机器人，依次核对 `map_server` 是否收到地图、`/scan` 的 `frame_id=laser`、`odom_combined → base_footprint` 是否连续，以及 AMCL 参数是否与本车实际 frame 一致。
 - 若 `navigation.launch` 已 include 底盘、AMCL 或 map_server，不要在其他终端重复启动；先用 `roslaunch --nodes turn_on_wheeltec_robot navigation.launch` 查看节点集合。
 
-## slam_toolbox 运行与 RViz 卡顿
-
-- `slam_toolbox` 实车建图已比 gmapping 更顺畅，但 Camsense X1 约 5.2Hz，急转弯仍可能出现重影；先降低转弯速度、重复走已知路线，再考虑参数优化。
-- RViz 在笔记本本地运行，ROS 节点在小主机运行；优先使用本地 GPU，不要把 RViz GUI 通过 SSH X11 转发到小主机。若 RViz 启动卡住，先关闭旧 RViz 进程，再检查 `echo $ROS_MASTER_URI`、`echo $DISPLAY` 和 ROS 网络连通性。
-
 ## 蓝牙遥控不响应
 
 按顺序排查，不跳步：
