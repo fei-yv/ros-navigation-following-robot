@@ -1,0 +1,18 @@
+# —— 本地私有资料与个人材料，不入库 ——
+/.obsidian/
+/附件/
+/all_code/
+/mapping_code/
+/报告图片/
+/*.zip
+/*.rar
+/*.docx
+/*.pdf
+
+# 旧版交接文档（本地保留，仅作改写素材）
+/0[0-9]-*.md
+/姓名_技术报告.md
+
+# 模型权重（YOLOv8n 为 AGPL-3.0，见 README 许可说明）
+*.onnx
+*.pt

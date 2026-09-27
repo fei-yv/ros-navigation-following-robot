@@ -1,0 +1,170 @@
+diff --git a/turn_on_wheeltec_robot/launch/include/algorithm_gmapping.launch b/turn_on_wheeltec_robot/launch/include/algorithm_gmapping.launch
+index c0d07ee..ca30327 100644
+--- a/turn_on_wheeltec_robot/launch/include/algorithm_gmapping.launch
++++ b/turn_on_wheeltec_robot/launch/include/algorithm_gmapping.launch
+@@ -8,8 +8,8 @@
+     <param name="base_frame" value="$(arg base_frame)"/>
+     <param name="odom_frame" value="$(arg odom_frame)"/>
+     <param name="map_update_interval" value="0.2"/>
+-    <param name="maxUrange" value="6"/>
+-    <param name="maxRange" value="8"/>
++    <param name="maxUrange" value="11"/>
++    <param name="maxRange" value="12"/>
+     <param name="sigma" value="0.05"/>
+     <param name="kernelSize" value="1"/>
+     <param name="lstep" value="0.05"/>
+@@ -17,24 +17,24 @@
+     <param name="iterations" value="5"/>
+     <param name="lsigma" value="0.075"/>
+     <param name="ogain" value="3.0"/>
+-    <param name="lskip" value="2"/>
+-    <param name="minimumScore" value="10"/>
+-    <param name="srr" value="0.02"/>
+-    <param name="srt" value="0.05"/>
+-    <param name="str" value="0.02"/>
+-    <param name="stt" value="0.05"/>
++    <param name="lskip" value="1"/>
++    <param name="minimumScore" value="30"/>
++    <param name="srr" value="0.01"/>
++    <param name="srt" value="0.02"/>
++    <param name="str" value="0.01"/>
++    <param name="stt" value="0.02"/>
+     <param name="linearUpdate" value="0.05"/>
+     <param name="angularUpdate" value="0.1"/>
+-    <param name="temporalUpdate" value="1.0"/>
++    <param name="temporalUpdate" value="1"/>
+     <param name="resampleThreshold" value="0.5"/>
+-    <param name="particles" value="20"/>
++    <param name="particles" value="8"/>
+ 
+     <param name="xmin" value="-10.0"/>
+     <param name="ymin" value="-10.0"/>
+     <param name="xmax" value="10.0"/>
+     <param name="ymax" value="10.0"/>
+ 
+-    <param name="delta" value="0.1"/>
++    <param name="delta" value="0.05"/>
+     <param name="llsamplerange" value="0.01"/>
+     <param name="llsamplestep" value="0.01"/>
+     <param name="lasamplerange" value="0.005"/>
+diff --git a/turn_on_wheeltec_robot/launch/include/base_serial.launch b/turn_on_wheeltec_robot/launch/include/base_serial.launch
+index 54489f1..9050ea2 100644
+--- a/turn_on_wheeltec_robot/launch/include/base_serial.launch
++++ b/turn_on_wheeltec_robot/launch/include/base_serial.launch
+@@ -19,10 +19,10 @@
+     <param name="gyro_frame_id"      type="string" value="gyro_link"/> 
+     <param name="car_mode"           type="string" value="$(arg car_mode)"/>
+     <!-- 里程计修正参数，对来自运动底盘的速度信息进行手动修正 -->
+-    <param name="odom_x_scale"      type="double" value="1.022"/> 
++    <param name="odom_x_scale"      type="double" value="1.0"/> 
+     <param name="odom_y_scale"      type="double" value="1.0"/> 
+-    <param name="odom_z_scale_positive"      type="double" value="1.019"/> 
+-    <param name="odom_z_scale_negative"      type="double" value="1.019"/> 
++    <param name="odom_z_scale_positive"      type="double" value="1.0"/> 
++    <param name="odom_z_scale_negative"      type="double" value="1.0"/> 
+ 
+ 
+     <!-- 如果开启了超声波避障功能，则订阅超声波避障速度 -->
+diff --git a/turn_on_wheeltec_robot/launch/include/robot_pose_ekf.launch b/turn_on_wheeltec_robot/launch/include/robot_pose_ekf.launch
+index a16444b..71a290e 100644
+--- a/turn_on_wheeltec_robot/launch/include/robot_pose_ekf.launch
++++ b/turn_on_wheeltec_robot/launch/include/robot_pose_ekf.launch
+@@ -8,7 +8,7 @@
+     <param name="freq" value="30.0"/>
+     <param name="sensor_timeout" value="2.0"/>
+     <param name="odom_used" value="true"/>
+-    <param name="imu_used" value="false"/>
++    <param name="imu_used" value="true"/>
+     <param name="vo_used" value="false"/>
+     <remap from="imu_data" to="imu" />
+   </node>
+diff --git a/turn_on_wheeltec_robot/launch/robot_model_visualization.launch b/turn_on_wheeltec_robot/launch/robot_model_visualization.launch
+index 6ae99d0..24d4483 100644
+--- a/turn_on_wheeltec_robot/launch/robot_model_visualization.launch
++++ b/turn_on_wheeltec_robot/launch/robot_model_visualization.launch
+@@ -303,7 +303,7 @@
+   <!-- car_mode and tf  mini_diff-->
+   <group if="$(eval car_mode == 'mini_diff')">
+       <node pkg="tf" type="static_transform_publisher" name="base_to_link" args="0 0 0.01563 0 0 0 base_footprint base_link 100" />
+-      <node pkg="tf" type="static_transform_publisher" name="base_to_laser" args="0.12 0.00 0.127 0 0 0  base_footprint laser 100" />
++      <node pkg="tf" type="static_transform_publisher" name="base_to_laser" args="0.05134 0.00 0.10992 3.14 0 0  base_footprint laser 100" />
+       <node pkg="tf" type="static_transform_publisher" name="base_to_radar" args="0 0 0.3 0 0 0  base_footprint radar 100" />
+       <node pkg="tf" type="static_transform_publisher" name="base_to_camera" args="0.11365 0.00017 0.0922 0 0 0   base_footprint camera_link 100" />
+       <node pkg="tf" type="static_transform_publisher" name="base_to_gyro" args="0 0 0 0 0 0 base_footprint gyro_link 100" />
+diff --git a/turn_on_wheeltec_robot/src/wheeltec_robot.cpp b/turn_on_wheeltec_robot/src/wheeltec_robot.cpp
+index 67ba2fd..d1e4f9d 100644
+--- a/turn_on_wheeltec_robot/src/wheeltec_robot.cpp
++++ b/turn_on_wheeltec_robot/src/wheeltec_robot.cpp
+@@ -295,7 +295,7 @@ void turn_on_robot::Publish_Odom()
+     odom.header.frame_id = odom_frame_id; // Odometer TF parent coordinates //里程计TF父坐标
+     odom.pose.pose.position.x = Robot_Pos.X; //Position //位置
+     odom.pose.pose.position.y = Robot_Pos.Y;
+-    odom.pose.pose.position.z = 0.0;
++    odom.pose.pose.position.z = Robot_Pos.Z;
+     odom.pose.pose.orientation = odom_quat; //Posture, Quaternion converted by Z-axis rotation //姿态，通过Z轴转角转换的四元数
+ 
+     odom.child_frame_id = robot_frame_id; // Odometer TF subcoordinates //里程计TF子坐标
+diff --git a/turn_on_wheeltec_robot/urdf/mini_diff_robot.urdf b/turn_on_wheeltec_robot/urdf/mini_diff_robot.urdf
+index 42748f6..5f3c688 100644
+--- a/turn_on_wheeltec_robot/urdf/mini_diff_robot.urdf
++++ b/turn_on_wheeltec_robot/urdf/mini_diff_robot.urdf
+@@ -256,6 +256,59 @@
+     <axis
+       xyz="0 0 0" />
+   </joint>
++  <link
++    name="laser">
++    <inertial>
++      <origin
++        xyz="0.00196458631141112 -3.57895386319134E-06 -0.000201831632453575"
++        rpy="0 0 0" />
++      <mass
++        value="0.047751916373633" />
++      <inertia
++        ixx="3.38461999752882E-05"
++        ixy="-2.19897167172158E-09"
++        ixz="1.07118468708652E-06"
++        iyy="3.94150415870058E-05"
++        iyz="6.83978371158863E-10"
++        izz="5.60787042116943E-05" />
++    </inertial>
++    <visual>
++      <origin
++        xyz="0 0 0"
++        rpy="0 0 0" />
++      <geometry>
++        <mesh
++          filename="package://turn_on_wheeltec_robot/meshes/mini_diff_robot_meshes/laser.STL" />
++      </geometry>
++      <material
++        name="">
++        <color
++          rgba="0.376470588235294 0.376470588235294 0.376470588235294 1" />
++      </material>
++    </visual>
++    <collision>
++      <origin
++        xyz="0 0 0"
++        rpy="0 0 0" />
++      <geometry>
++        <mesh
++          filename="package://turn_on_wheeltec_robot/meshes/mini_diff_robot_meshes/laser.STL" />
++      </geometry>
++    </collision>
++  </link>
++  <joint
++    name="laser_joint"
++    type="fixed">
++    <origin
++      xyz="0.051343 -1.2576E-05 0.094524"
++      rpy="0 0 3.1416" />
++    <parent
++      link="base_link" />
++    <child
++      link="laser" />
++    <axis
++      xyz="0 0 0" />
++  </joint>
+   <link
+     name="camera_link">
+     <inertial>
