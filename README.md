@@ -45,7 +45,6 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 │   ├── architecture.md            软件架构与技术总结
 │   ├── person-follow.md           人员跟随原理与调参
 │   ├── troubleshooting.md         故障排查与备选方案
-│   └── report.md                  项目技术报告
 ├── src/
 │   ├── camsense_driver/           Camsense X1 驱动（BSD 3-Clause，含无效点修复）
 │   └── person_follow/             标准 catkin 人员检测与跟随包（MIT）
