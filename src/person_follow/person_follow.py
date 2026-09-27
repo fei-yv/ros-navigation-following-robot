@@ -50,7 +50,7 @@ class PersonFollower(object):
         self.K_depth = rospy.get_param('~K_depth', 900.0)
         self.max_angular = rospy.get_param('~max_angular', 0.25)
         self.max_linear = rospy.get_param('~max_linear', 0.3)
-        self.alpha = rospy.get_param('~alpha', 0.3)                    # 低通滤波系数(0~1，越小越平滑、越消摆头)
+        self.alpha = max(0.0, min(1.0, rospy.get_param('~alpha', 0.3))) # 低通滤波系数(0~1，越小越平滑)
         self.turn_slowdown = rospy.get_param('~turn_slowdown', 0.8)    # 转向降速强度
         self.lost_timeout = rospy.get_param('~lost_timeout', 1.0)
         self.angular_deadzone = rospy.get_param('~angular_deadzone', 60)
@@ -136,8 +136,8 @@ class PersonFollower(object):
         raw_lin = max(-self.max_linear, min(self.max_linear, raw_lin))
 
         # 低通滤波：平滑输出，抑制打滑/抖动引起的突变
-        self.filt_ang += (1.0 - self.alpha) * (raw_ang - self.filt_ang)
-        self.filt_lin += (1.0 - self.alpha) * (raw_lin - self.filt_lin)
+        self.filt_ang += self.alpha * (raw_ang - self.filt_ang)
+        self.filt_lin += self.alpha * (raw_lin - self.filt_lin)
         twist.angular.z = self.filt_ang
         twist.linear.x = self.filt_lin
 

@@ -117,11 +117,11 @@ sudo udevadm trigger
 
 ## 四、C30D 底盘驱动（官方源码 + patches 补丁）
 
-> **驱动包来源**：`camsense_driver` 已包含在本仓库 `src/camsense_driver/`（BSD 3-Clause）；`turn_on_wheeltec_robot` 与 `wheeltec_robot_rc` 需获取轮趣官方 Noetic 源码后，应用本仓库 `patches/` 目录中的补丁，详细获取步骤见 README。
+> **驱动包来源**：`camsense_driver` 与 `person_follow` 已包含在本仓库 `src/` 下（分别为 BSD 3-Clause 与 MIT）；`turn_on_wheeltec_robot` 与 `wheeltec_robot_rc` 需获取轮趣官方 Noetic 源码后，应用本仓库 `patches/` 目录中的补丁，详细获取步骤见 README。
 > **Ubuntu 软件配置**：依赖 7 包已装、ROS 源切清华镜像、`catkin_make` 0 报错（已在 CMakeLists 中补上 `add_dependencies`，包含在补丁内）、`.bashrc` 已 source、dialout 已生效。
 > **底盘联调结果**：udev 固定 `/dev/wheeltec_controller`（CH9102，ttyACM0）与 `/dev/camsense_x1`（CH340，ttyUSB0，须直连 USB 不能过拓展坞）；`/odom` 稳定 20Hz；`/scan` 约 5.2Hz/360°/400 点；键盘四向一致。早期记录过"松手约 0.3s 停车、滑行 4~6cm"，但没有注明当时采用的控制链路，不能据此认定 ROS/UART3 通信中断停车已通过；该项验证见 [固件参数配置 · ROS 通信超时停车](firmware.md#ros-通信超时停车)。后续已完成激光 TF、里程计校准、gmapping 建图和导航基本演示；slam_toolbox 是历史对照。
 
-1. **拷贝到 Ubuntu**：把仓库 `src/` 下的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`camsense_driver` 三个包放进 `~/catkin_ws/src/`（复制或软链接均可），最终应能看到 `~/catkin_ws/src/turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`camsense_driver` 三个包。拷完先补脚本执行权限：`chmod +x ~/catkin_ws/src/*/scripts/*.py`（Windows 拷过去的文件没有 x 权限）。
+1. **拷贝到 Ubuntu**：把官方源码中的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc` 和本仓库 `src/` 下的 `camsense_driver`、`person_follow` 放进 `~/catkin_ws/src/`（复制或软链接均可）。拷完先补脚本执行权限：`chmod +x ~/catkin_ws/src/*/scripts/*.py ~/catkin_ws/src/person_follow/*.py`（Windows 拷过去的文件没有 x 权限）。
 2. **补丁已包含的配置修改**（应用 `patches/` 后无需手动再改）：
    - `car_mode=mini_diff`（C30D 两轮差速，原默认 `senior_akm` 不适合）；
    - `wheeltec_lidar.launch` 已整体换成 Camsense X1 驱动（原文件备份为 `.orig.bak`）；

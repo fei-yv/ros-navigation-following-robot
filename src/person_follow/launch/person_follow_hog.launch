@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="person_follow" type="person_detect_hog.py"
+        name="person_detector_hog" output="screen" />
+  <node pkg="person_follow" type="person_follow.py"
+        name="person_follower" output="screen" />
+</launch>

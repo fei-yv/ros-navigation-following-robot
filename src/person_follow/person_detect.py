@@ -19,7 +19,7 @@
 import cv2
 import rospy
 from cv_bridge import CvBridge
-from sensor_msgs.msg import CompressedImage, Image, RegionOfInterest
+from sensor_msgs.msg import CompressedImage, RegionOfInterest
 from ultralytics import YOLO
 
 
@@ -42,7 +42,7 @@ class PersonDetector(object):
         if self.publish_debug:
             self.debug_pub = rospy.Publisher('/person/debug/compressed', CompressedImage, queue_size=1)
 
-        self.sub = rospy.Subscriber('/usb_cam/image_raw/compressed', Image,
+        self.sub = rospy.Subscriber('/usb_cam/image_raw/compressed', CompressedImage,
                                     self.cb, queue_size=1, buff_size=2 ** 24)
         rospy.loginfo('person_detector 就绪，等待 /usb_cam/image_raw/compressed ...')
 

@@ -1,6 +1,6 @@
 # 人员跟随
 
-本文说明人员跟随子系统的原理、代码结构和运行方法。代码位于 [`src/person_follow/`](../src/person_follow/)，不依赖建图导航栈——即使不做建图导航，只启动底盘、雷达和摄像头也可以运行跟随功能。
+本文说明人员跟随子系统的原理、代码结构和运行方法。代码位于 [`src/person_follow/`](../src/person_follow/)，现在是一个可以直接放进 catkin 工作空间编译的 ROS 包。不依赖建图导航栈——即使不做建图导航，只启动底盘、雷达和摄像头也可以运行跟随功能。
 
 ## 系统结构
 
@@ -86,17 +86,31 @@ yolo export model=yolov8n.pt format=onnx imgsz=320 opset=12
 
 前置：底盘与雷达的启动方式与建图阶段相同（见 [复刻流程](bringup.md)），另需安装 `ros-noetic-usb-cam`。
 
+把 `src/person_follow/` 放入 `~/catkin_ws/src/` 后，先安装 ROS 依赖并编译：
+
+```bash
+cd ~/catkin_ws
+rosdep install --from-paths src --ignore-src -r -y
+catkin_make
+source devel/setup.bash
+```
+
+ONNX 版本还需要在小主机上安装 `onnxruntime`、`opencv-python`、`numpy`，并确保
+`cv_bridge` 可用；不要把 `yolov8n.onnx` 或 `yolov8n.pt` 提交到仓库。
+
 ```bash
 # 1. 启动底盘 + 雷达（同建图阶段的启动方式，不要启动 gmapping）
 
 # 2. 启动摄像头
 rosrun usb_cam usb_cam_node _video_device:=/dev/video0 _image_width:=640 _image_height:=480
 
-# 3. 启动检测节点
-python3 person_detect_onnx.py _model:=/home/robot/catkin_ws/person_follow/yolov8n.onnx _conf:=0.5
+# 3. 启动检测节点和跟随节点（推荐）
+roslaunch person_follow person_follow_onnx.launch \
+  model:=/home/robot/catkin_ws/src/person_follow/models/yolov8n.onnx \
+  conf:=0.5 target_depth:=2.0
 
-# 4. 启动跟随节点
-python3 person_follow.py _target_depth:=2.0 _K_depth:=900 _search_angular:=0.3
+# 没有 ONNX 模型时，先用 OpenCV HOG 验证控制链路
+roslaunch person_follow person_follow_hog.launch
 ```
 
 调试时可另开终端 `rqt_image_view` 订阅 `/person/debug/compressed` 查看检测框；用 `scan_diag.py` 核对雷达前方读数是否与实际障碍一致。
@@ -109,4 +123,4 @@ python3 person_follow.py _target_depth:=2.0 _K_depth:=900 _search_angular:=0.3
 
 - 检测稳定性受光照、遮挡影响明显；多人同框时跟随置信度最高的一个。
 - 控制频率受 CPU 占用和摄像头帧率限制；usb_cam 分辨率改变时要同步改 `~img_width`。
-- 目标下蹲、转身等导致框高突变的动作会引起距离估计波动，可加大 `~alpha` 平滑（牺牲响应速度）。
+- 目标下蹲、转身等导致框高突变的动作会引起距离估计波动，可减小 `~alpha` 平滑（牺牲响应速度）。

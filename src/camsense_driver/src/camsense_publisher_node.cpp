@@ -3,6 +3,9 @@
 #include <sensor_msgs/LaserScan.h>
 #include <camsense_driver/camsense_x1.h>
 
+#include <cmath>
+#include <limits>
+
 
 int main(int argc, char **argv)
 {
@@ -32,7 +35,8 @@ int main(int argc, char **argv)
   sensor_msgs::LaserScan scan;
   scan.header.frame_id = frame_id;
   scan.range_min = 0.0;
-  scan.angle_max = 2.0*M_PI;
+  scan.angle_min = 0.0;
+  scan.angle_max = 2.0*M_PI - (2.0*M_PI)/400;
   scan.range_min = 0.12;
   scan.range_max = 8.0;
   scan.angle_increment = (2*M_PI)/400;
@@ -48,10 +52,25 @@ int main(int argc, char **argv)
 
     for(int i = 0; i < 400; i++)
     {
-      scan.ranges[i] =  camsense.distanceArray[i] / 1000.0;
       scan.intensities[i] =  camsense.qualityArray[i];
+      const double distance = camsense.distanceArray[i] / 1000.0;
+      const int quality = camsense.qualityArray[i];
+      if (quality <= 0 || !std::isfinite(distance) ||
+          distance < scan.range_min || distance > scan.range_max)
+      {
+        // LaserScan uses NaN for an unknown return. Publishing zero would
+        // make SLAM interpret an invalid sample as a nearby obstacle.
+        scan.ranges[i] = std::numeric_limits<float>::quiet_NaN();
+      }
+      else
+      {
+        scan.ranges[i] = distance;
+      }
     }
-    scan.time_increment = 1.0 / camsense.getRotationSpeed() / 400;
+    const double rotation_speed = camsense.getRotationSpeed();
+    scan.time_increment = rotation_speed > 0.0
+        ? 1.0 / rotation_speed / 400.0
+        : 0.0;
     scan.header.stamp = ros::Time::now();
     scan_pub.publish(scan);
 

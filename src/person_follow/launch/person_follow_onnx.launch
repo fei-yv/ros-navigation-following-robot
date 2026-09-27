@@ -1,0 +1,16 @@
+<launch>
+  <arg name="model" default="$(env HOME)/catkin_ws/src/person_follow/models/yolov8n.onnx" />
+  <arg name="conf" default="0.5" />
+  <arg name="target_depth" default="2.0" />
+
+  <node pkg="person_follow" type="person_detect_onnx.py"
+        name="person_detector_onnx" output="screen">
+    <param name="model" value="$(arg model)" />
+    <param name="conf" value="$(arg conf)" />
+  </node>
+
+  <node pkg="person_follow" type="person_follow.py"
+        name="person_follower" output="screen">
+    <param name="target_depth" value="$(arg target_depth)" />
+  </node>
+</launch>

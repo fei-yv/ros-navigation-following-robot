@@ -16,3 +16,8 @@
 # 模型权重（YOLOv8n 为 AGPL-3.0，见 README 许可说明）
 *.onnx
 *.pt
+
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
