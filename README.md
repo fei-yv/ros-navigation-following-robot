@@ -6,7 +6,7 @@
 |---|---|---|
 | ![俯视图：顶部雷达、摄像头、上层小主机和亚克力底板](media/top-view.jpg) | ![侧视图：上下层亚克力板、铜柱、主机和底盘](media/side-view.jpg) | ![后视图：主机接口、线缆、电池和底盘控制板](media/rear-view.jpg) |
 
-实测情况：多点导航一次约 2 分 42 秒、过程无碰撞；人员跟随功能完成并可演示。系统的主要不足（建图转弯重影、雷达有效量程受限）在[故障排查](docs/troubleshooting.md)中有分析。视频暂不随仓库分发，后续会补充演示链接或压缩后的短片。
+实测情况：多点导航一次约 2 分 42 秒、过程无碰撞；人员跟随功能完成并可演示。系统的主要不足（建图转弯重影、雷达有效量程受限）在[故障排查](docs/troubleshooting.md)中有分析。多点导航演示视频见[媒体说明](media/README.md)。
 
 > 这是一个真实硬件项目的复现记录，不是开箱即用的仿真包。轮趣底盘官方源码、地图文件和 YOLO 权重没有直接放进仓库，需要按下文说明准备。
 
@@ -45,6 +45,7 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 │   ├── architecture.md            软件架构与技术总结
 │   ├── person-follow.md           人员跟随原理与调参
 │   ├── troubleshooting.md         故障排查与备选方案
+│   └── commands.md                实际运行过的常用命令
 ├── src/
 │   ├── camsense_driver/           Camsense X1 驱动（BSD 3-Clause，含无效点修复）
 │   └── person_follow/             标准 catkin 人员检测与跟随包（MIT）
@@ -61,7 +62,7 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 1. **硬件**：按[硬件与接线](docs/hardware.md)装配底盘、雷达、主机和摄像头，完成供电与接线检查。
 2. **获取官方源码**：从轮趣（WheelTEC）官方渠道获取
    - 固件 Keil 工程：`R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26`（注意车型和日期，不同车型工程不能混用，见[固件参数配置](docs/firmware.md)）；
-   - ROS Noetic 源码：含 `turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`waterplus_map_tools`、`rf2o_laser_odometry`。
+   - ROS Noetic 源码：含 `turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`waterplus_map_tools`、`rf2o_laser_odometry`。多点导航使用 [Tang-Annan/waterplus_map_tools](https://github.com/Tang-Annan/waterplus_map_tools) 航点插件，来源和许可说明见[常用命令](docs/commands.md)。
 3. **固件**：在 Keil 工程根目录应用 `patches/firmware-c30d-r550.patch`，按[固件参数配置](docs/firmware.md)核对参数后编译烧录。
 4. **ROS 环境**：按[ROS 环境搭建](docs/ros-setup.md)装好 Ubuntu 20.04 + ROS Noetic，在 `catkin_ws/src` 应用 `patches/ros-noetic-c30d.patch`，再把本仓库的 `src/camsense_driver/` 和 `src/person_follow/` 放进 `catkin_ws/src`，执行：
 
@@ -73,7 +74,7 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
    ```
 
    `person_follow` 已经是标准 catkin 包，检测节点和跟随节点可以用 `rosrun` 或仓库内的 launch 文件启动。
-5. **建图与导航**：按[复刻流程](docs/bringup.md)完成底盘联调、里程计校准、gmapping 建图、地图保存和 move_base 导航。
+5. **建图与导航**：按[复刻流程](docs/bringup.md)完成底盘联调、里程计校准、gmapping 建图、地图保存和 move_base 导航；多点航点操作见[常用命令](docs/commands.md)。
 6. **人员跟随**：导出 YOLOv8n ONNX 模型后按[人员跟随](docs/person-follow.md)运行检测与跟随节点；没有模型时也可以先使用 HOG 版本验证控制链路。
 
 ## 许可说明
