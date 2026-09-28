@@ -46,11 +46,14 @@ roslaunch turn_on_wheeltec_robot navigation.launch \
   map_file:=/home/feiyv/maps/room_map_v2.yaml
 ```
 
-笔记本端连接小主机时，根据现场网络修改以下地址：
+笔记本端连接小主机时，需要根据现场网络修改以下地址。下面的 `192.168.1.100` 和 `192.168.1.101` 仅为格式示例，不是本项目设备的真实地址：
 
 ```bash
-export ROS_MASTER_URI=http://192.168.1.100:11311
-export ROS_IP=192.168.1.101
+# 小主机和笔记本必须处于同一局域网；请替换为现场实际 IP
+export ROBOT_IP=192.168.1.100   # 示例：小主机 IP
+export LAPTOP_IP=192.168.1.101  # 示例：笔记本 IP
+export ROS_MASTER_URI=http://${ROBOT_IP}:11311
+export ROS_IP=${LAPTOP_IP}
 rviz -d ~/camsense_view.rviz
 ```
 
