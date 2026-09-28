@@ -56,7 +56,7 @@ rviz -d ~/camsense_view.rviz
 
 ## 多点导航
 
-多点导航使用 [Tang-Annan/waterplus_map_tools](https://github.com/Tang-Annan/waterplus_map_tools) 提供的航点工具。该插件不是本仓库原创代码，原项目采用 GPL-2.0 许可证；请按原项目许可获取、编译和使用。
+多点导航是本项目的重点功能，使用 [6-robot/waterplus_map_tools](https://github.com/6-robot/waterplus_map_tools) 提供的航点工具。该插件不是本仓库原创代码，原项目采用 GPL-2.0 许可证；请按原项目许可获取、编译和使用。
 
 先启动导航并加载地图：
 

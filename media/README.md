@@ -9,6 +9,6 @@
 - 文件：`multi-point-navigation-demo.mp4`
 - 时长：约 2 分 48 秒
 - 编码：H.264 / 960×544 / 30 fps
-- 功能：ROS Noetic + AMCL + `move_base` + `waterplus_map_tools` 多点导航
+- 功能：ROS Noetic + AMCL + `move_base` + [`6-robot/waterplus_map_tools`](https://github.com/6-robot/waterplus_map_tools) 多点导航
 
 视频由项目作者拍摄，展示的是本项目实车运行结果。视频中的地图、航点文件和官方底盘源码不随仓库分发。

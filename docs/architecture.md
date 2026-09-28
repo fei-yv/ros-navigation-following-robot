@@ -34,7 +34,7 @@ map -> odom_combined -> base_footprint -> laser
 - `slam_gmapping`：当前建图主线，使用激光扫描和里程计完成二维 SLAM。
 - `slam_toolbox`：曾安装并实车测试过的历史对照方案，更新速度较快；当前项目建图使用 `gmapping`，不把历史方案写成已验证的当前回退配置。
 - `map_server`、`amcl`、`move_base`：加载已保存地图、定位和自主导航。
-- [Waterplus 地图工具](https://github.com/Tang-Annan/waterplus_map_tools)：保存和读取航点，支持多点导航。本仓库只记录调用方式，不重新分发该插件；其原项目采用 GPL-2.0 许可证。
+- [Waterplus 地图工具](https://github.com/6-robot/waterplus_map_tools)：本项目多点导航的核心插件，负责保存和读取航点。本仓库只记录调用方式，不重新分发该插件；其原项目采用 GPL-2.0 许可证。
 - YOLOv8n + ONNX/OpenCV：人员检测和跟随（见 `src/person_follow/` 与 [人员跟随](person-follow.md)）。
 
 ## 4. 已完成的底盘和 ROS 联调

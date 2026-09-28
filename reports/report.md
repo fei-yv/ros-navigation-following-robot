@@ -76,7 +76,7 @@ map -> odom_combined -> base_footprint -> laser
 
 完成建图后使用 `map_server` 保存地图，导航阶段启动 AMCL、move_base、底盘和雷达，停止 gmapping，避免两个节点同时发布 `map -> odom_combined`。启动 RViz 后将 Fixed Frame 设置为 `map`，先使用 `2D Pose Estimate` 设置机器人初始位置和朝向，再使用 `2D Nav Goal` 发送单个目标点。AMCL 根据激光扫描和已有地图估计机器人位姿，move_base 先在全局地图上规划路线，再利用局部代价地图实时避开障碍物。
 
-多点导航采用机器人工匠阿杰发布的 [waterplus_map_tools](https://github.com/Tang-Annan/waterplus_map_tools) 航点插件保存和读取航点文件。航点由 RViz 中的 Add Waypoint 工具添加，保存为 XML 文件后交给多点导航节点按顺序执行。本仓库使用其公开接口，不包含该插件源码；原项目采用 GPL-2.0 许可证，使用时应遵循原项目许可。实际使用时，先确认小主机上的 ROS 节点已经启动，再在笔记本上打开 RViz；随后加载地图、设置初始位姿并检查机器人模型和激光是否重合。发送多点任务前，先清理旧的导航进程和旧目标，防止重复的 move_base 或航点节点产生冲突。完整命令见[常用运行命令](../docs/commands.md)。
+多点导航是本项目的重点功能，采用 [6-robot/waterplus_map_tools](https://github.com/6-robot/waterplus_map_tools) 航点插件保存和读取航点文件。航点由 RViz 中的 Add Waypoint 工具添加，保存为 XML 文件后交给多点导航节点按顺序执行。本仓库使用其公开接口，不包含该插件源码；原项目采用 GPL-2.0 许可证，使用时应遵循原项目许可。实际使用时，先确认小主机上的 ROS 节点已经启动，再在笔记本上打开 RViz；随后加载地图、设置初始位姿并检查机器人模型和激光是否重合。发送多点任务前，先清理旧的导航进程和旧目标，防止重复的 move_base 或航点节点产生冲突。完整命令见[常用运行命令](../docs/commands.md)。
 
 本次实车测试使用已经保存的地图完成多点导航，任务总用时约 2 分 42 秒，过程中没有发生碰撞。由于测试重点是功能完成和运行稳定性，报告不虚构导航距离、定位误差和规划成功率等没有专门测量的数据。实际运行中，地图质量、初始位姿精度和无线网络延迟都会影响导航表现，尤其是在远离无线路由器后，远程 RViz 可能出现数据延迟或连接中断。
 
