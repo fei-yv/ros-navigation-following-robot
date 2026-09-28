@@ -56,9 +56,18 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 │   ├── firmware-c30d-r550.patch   固件全部修改（应用在轮趣官方 Keil 工程上）
 │   ├── ros-noetic-c30d.patch      ROS 侧全部修改（应用在官方源码包上）
 │   └── README.md                  补丁应用方法与内容清单
+├── maps/                          实测地图与多点导航航点文件
+│   ├── last2.yaml/.pgm             地图版本 2
+│   ├── last6.yaml/.pgm             地图版本 6
+│   ├── last6.xml                   16 个多点导航航点
+│   └── README.md                   文件配套关系与使用方法
 ├── media/                         实车照片与后续演示媒体
 └── reports/                       技术报告
 ```
+
+## 示例地图与航点
+
+仓库提供两套实测地图作为项目示例。其中 `maps/last6.yaml` 与 `maps/last6.pgm` 配套，并对应 `maps/last6.xml` 中的 16 个多点导航航点。这些文件只适用于记录中的测试场地，不能直接作为其他场地的导航配置；使用方法和限制见[地图与航点说明](maps/README.md)。多点导航插件和演示入口见上方的[核心功能](#核心功能)。
 
 ## 快速开始
 

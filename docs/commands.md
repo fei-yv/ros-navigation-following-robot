@@ -9,6 +9,10 @@ source /opt/ros/noetic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 ```
 
+## 仓库内示例地图
+
+仓库的 `maps/` 目录包含两套实测地图示例：`last2.yaml + last2.pgm` 和 `last6.yaml + last6.pgm`。其中 `last6.xml` 是与 `last6` 地图配套的 16 个多点导航航点。它们只用于展示本项目现场的运行记录，不能直接用于其他场地；实际使用必须重新建图并重新采集航点。YAML 使用相对图片路径，详细说明见[地图与航点说明](../maps/README.md)。
+
 ## 底盘、雷达和建图
 
 ```bash
@@ -46,6 +50,13 @@ roslaunch turn_on_wheeltec_robot navigation.launch \
   map_file:=/home/feiyv/maps/room_map_v2.yaml
 ```
 
+如需复现本项目记录的测试场地，可以参考以下示例命令（将路径替换为实际克隆目录；换到其他场地不能直接套用）：
+
+```bash
+roslaunch turn_on_wheeltec_robot navigation.launch \
+  map_file:=/path/to/ros-navigation-following-robot/maps/last6.yaml
+```
+
 笔记本端连接小主机时，需要根据现场网络修改以下地址。下面的 `192.168.1.100` 和 `192.168.1.101` 仅为格式示例，不是本项目设备的真实地址：
 
 ```bash
@@ -73,6 +84,13 @@ roslaunch turn_on_wheeltec_robot navigation.launch \
 ```bash
 rosrun waterplus_map_tools wp_manager \
   _load:=/home/feiyv/room_waypoints.xml
+```
+
+复现本项目测试场地时，可参考使用与 `last6` 地图配套的航点文件：
+
+```bash
+rosrun waterplus_map_tools wp_manager \
+  _load:=/path/to/ros-navigation-following-robot/maps/last6.xml
 ```
 
 在 RViz 中用航点工具添加目标后保存：
