@@ -47,7 +47,7 @@ roslaunch wheeltec_robot_rc keyboard_teleop.launch
 
 ```bash
 roslaunch turn_on_wheeltec_robot navigation.launch \
-  map_file:=/home/feiyv/maps/room_map_v2.yaml
+  map_file:=/home/robot/maps/room_map_v2.yaml
 ```
 
 如需复现本项目记录的测试场地，可以参考以下示例命令（将路径替换为实际克隆目录；换到其他场地不能直接套用）：
@@ -76,14 +76,14 @@ rviz -d ~/camsense_view.rviz
 
 ```bash
 roslaunch turn_on_wheeltec_robot navigation.launch \
-  map_file:=/home/feiyv/maps/room_map_v2.yaml
+  map_file:=/home/robot/maps/room_map_v2.yaml
 ```
 
 加载已有航点：
 
 ```bash
 rosrun waterplus_map_tools wp_manager \
-  _load:=/home/feiyv/room_waypoints.xml
+  _load:=/home/robot/room_waypoints.xml
 ```
 
 复现本项目测试场地时，可参考使用与 `last6` 地图配套的航点文件：
@@ -97,7 +97,7 @@ rosrun waterplus_map_tools wp_manager \
 
 ```bash
 rosrun waterplus_map_tools wp_saver \
-  -f /home/feiyv/room_waypoints.xml
+  -f /home/robot/room_waypoints.xml
 ```
 
 开始按顺序执行航点：

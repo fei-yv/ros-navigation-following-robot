@@ -11,4 +11,4 @@
 - 编码：H.264 / 960×544 / 30 fps
 - 功能：ROS Noetic + AMCL + `move_base` + [`6-robot/waterplus_map_tools`](https://github.com/6-robot/waterplus_map_tools) 多点导航
 
-视频由项目作者拍摄，展示的是本项目实车运行结果。视频中的地图、航点文件和官方底盘源码不随仓库分发。
+视频由项目作者拍摄，展示的是本项目实车运行结果。视频中的地图和航点文件只作为示例；Release 的 `all_code-v1.0.0.zip` 另提供 ROS 源码快照，官方 STM32 Keil 工程仍需从轮趣官方渠道获取。

@@ -201,7 +201,7 @@ USER\WHEELTEC.uvprojx
 
 - STM32 固件工程：从轮趣（WheelTEC）官方渠道（官网资料中心、官方网盘或购买渠道客服）获取对应车型的资料包。本车对应 `R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26` 工程及 C30D V2.0 控制板资料；官方资料中与本固件相关的文档包括 C30D 随货手册、《单片机与 APP 通信协议》等，是通信协议与说明书的一手来源。
 - L150Pro 车型的资料仅用于参考 C30D 板卡资料，不是本车最终车型工程。
-- ROS 侧代码：`turn_on_wheeltec_robot`、`wheeltec_robot_rc` 等功能包需获取轮趣官方 Noetic 源码后，应用本仓库 `patches/` 目录中的补丁，补丁内容即本文所述的全部 ROS 侧修改；`camsense_driver` 已包含在 `src/camsense_driver/`，无需单独下载。
+- ROS 侧代码：Release 的 `all_code-v1.0.0.zip` 已提供包含本项目修改的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc` 等功能包快照；若从轮趣官方 Noetic 源码重新搭建，再应用本仓库 `patches/` 目录中的补丁。`camsense_driver` 已包含在 `src/camsense_driver/`，无需单独下载。
 - 若官方网盘链接失效，应通过轮趣官方渠道重新索取对应车型资料；本仓库不替代原始源码。
 
 ## JDY-31 蓝牙适配

@@ -5,13 +5,13 @@
 用 onnxruntime 加载 YOLOv8 导出的 yolov8n.onnx，检测「人」(COCO class 0)，
 把置信度最高的人的框发到 /person/bbox。精度等同 YOLOv8，且整机单机跑。
 
-前提：先把 yolov8n.onnx 放到本目录（在笔记本用 ultralytics 导出，见文末）。
+前提：先把 yolov8n.onnx 放到 models/ 目录（在笔记本用 ultralytics 导出，见文末）。
 
 运行（小主机，先起 usb_cam）：
-  python3 person_detect_onnx.py _model:=/home/robot/person_follow/yolov8n.onnx _conf:=0.5
+  python3 person_detect_onnx.py _model:=/home/robot/catkin_ws/src/person_follow/models/yolov8n.onnx _conf:=0.5
 
 参数（均可用 _key:=value 覆盖）：
-  ~model         onnx 模型路径，默认 /home/robot/person_follow/yolov8n.onnx
+  ~model         onnx 模型路径，默认 /home/robot/catkin_ws/src/person_follow/models/yolov8n.onnx
   ~conf          置信度阈值，默认 0.5
   ~imgsz         模型输入边长，默认 320（须与导出时一致；当前 onnx 是 320 输入）
   ~iou           NMS IoU 阈值，默认 0.45
@@ -70,7 +70,7 @@ class OnnxPersonDetector(object):
     def __init__(self):
         rospy.init_node('person_detector_onnx')
         self.bridge = CvBridge()
-        model = rospy.get_param('~model', '/home/robot/person_follow/yolov8n.onnx')
+        model = rospy.get_param('~model', '/home/robot/catkin_ws/src/person_follow/models/yolov8n.onnx')
         self.conf_th = rospy.get_param('~conf', 0.5)
         self.imgsz = rospy.get_param('~imgsz', 320)
         self.iou_thr = rospy.get_param('~iou', 0.45)

@@ -29,7 +29,7 @@ usb_cam (/usb_cam/image_raw)
 
 | 参数 | 默认值 | 说明 |
 |---|---|---|
-| `~model` | `/home/robot/person_follow/yolov8n.onnx` | ONNX 模型路径，建议显式指定 |
+| `~model` | `/home/robot/catkin_ws/src/person_follow/models/yolov8n.onnx` | ONNX 模型路径，建议显式指定 |
 | `~conf` | 0.5 | 置信度阈值 |
 | `~imgsz` | 320 | 模型输入边长，须与导出时一致 |
 | `~iou` | 0.45 | NMS IoU 阈值 |
@@ -44,9 +44,9 @@ pip install ultralytics
 yolo export model=yolov8n.pt format=onnx imgsz=320 opset=12
 ```
 
-得到约 13 MB 的 `yolov8n.onnx`，拷贝到小主机即可。
+得到约 13 MB 的 `yolov8n.onnx`，放到 `src/person_follow/models/`（Release 快照中已放好）即可。
 
-> 许可说明：YOLOv8 的训练代码与权重遵循 Ultralytics 的 AGPL-3.0 许可，与本仓库的 MIT 代码不同源，因此本仓库不直接分发 `.pt` / `.onnx` 权重文件，请按上面的命令自行导出。
+> 许可说明：这里的 `yolov8n.onnx` 由 Ultralytics 官方发布的 `yolov8n.pt` 导出，模型及相关代码遵循 AGPL-3.0，与本仓库的 MIT 代码分开。Release 快照包含该 ONNX 文件；使用或再分发时请同时遵守 AGPL-3.0。模型来源和导出信息记录在 Release 内 `person_follow/models/README.md`。
 
 ## 跟随节点 person_follow.py
 
@@ -96,7 +96,7 @@ source devel/setup.bash
 ```
 
 ONNX 版本还需要在小主机上安装 `onnxruntime`、`opencv-python`、`numpy`，并确保
-`cv_bridge` 可用；不要把 `yolov8n.onnx` 或 `yolov8n.pt` 提交到仓库。
+`cv_bridge` 可用。Release 快照中的模型位于 `person_follow/models/yolov8n.onnx`；从 Git 仓库源码重新搭建时，可按上面的命令导出并放入同一目录。
 
 ```bash
 # 1. 启动底盘 + 雷达（同建图阶段的启动方式，不要启动 gmapping）

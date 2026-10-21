@@ -10,7 +10,7 @@
 
 > 本项目使用 [6-robot/waterplus_map_tools](https://github.com/6-robot/waterplus_map_tools) 管理航点并执行连续导航任务，已完成真实小车无碰撞演示。可直接查看[演示视频](media/README.md)、[多点导航运行命令](docs/commands.md#多点导航)和[插件源码仓库](https://github.com/6-robot/waterplus_map_tools)。
 
-> 这是一个真实硬件项目的复现记录，不是开箱即用的仿真包。轮趣底盘官方源码(可直接向官方索取）、地图文件和 YOLO 权重没有直接放进仓库，需要按下文说明准备。
+> 这是一个真实硬件项目的复现记录，不是开箱即用的仿真包。Git 仓库主体提供项目自有代码、文档和补丁；Release 附件 `all_code-v1.0.0.zip` 另含 ROS 工作空间源码和已转换的 `yolov8n.onnx` 权重。STM32 Keil 官方工程仍需从轮趣官方渠道获取。
 
 ## 核心功能
 
@@ -72,11 +72,11 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 ## 快速开始
 
 1. **硬件**：按[硬件与接线](docs/hardware.md)装配底盘、雷达、主机和摄像头，完成供电与接线检查。
-2. **获取官方源码**：从轮趣（WheelTEC）官方渠道获取
-   - 固件 Keil 工程：`R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26`（注意车型和日期，不同车型工程不能混用，见[固件参数配置](docs/firmware.md)）；
-   - ROS Noetic 源码：含 `turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`waterplus_map_tools`、`rf2o_laser_odometry`。多点导航使用 [6-robot/waterplus_map_tools](https://github.com/6-robot/waterplus_map_tools) 航点插件，来源和许可说明见[常用命令](docs/commands.md)。
+2. **准备上游源码**：
+   - 固件 Keil 工程需从轮趣（WheelTEC）官方渠道获取：`R550_C30D(2.0)_Mini小车STM32源码_霍尔编码器_2025.12.26`（注意车型和日期，不同车型工程不能混用，见[固件参数配置](docs/firmware.md)）；
+   - ROS Noetic 工作空间可直接使用 Release 的 `all_code-v1.0.0.zip` 快照，其中包括本次实测使用的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc`、`waterplus_map_tools` 和 `rf2o_laser_odometry`。若不使用 Release 快照，也可以分别获取各上游项目，再按[补丁说明](patches/README.md)应用本仓库的修改。多点导航插件来源和许可说明见[常用命令](docs/commands.md)。
 3. **固件**：在 Keil 工程根目录应用 `patches/firmware-c30d-r550.patch`，按[固件参数配置](docs/firmware.md)核对参数后编译烧录。
-4. **ROS 环境**：按[ROS 环境搭建](docs/ros-setup.md)装好 Ubuntu 20.04 + ROS Noetic，在 `catkin_ws/src` 应用 `patches/ros-noetic-c30d.patch`，再把本仓库的 `src/camsense_driver/` 和 `src/person_follow/` 放进 `catkin_ws/src`，执行：
+4. **ROS 环境**：按[ROS 环境搭建](docs/ros-setup.md)装好 Ubuntu 20.04 + ROS Noetic。使用 Release 快照时，解压后直接使用其中已配好的 `catkin_ws/src` 和 `person_follow`，**不要再次应用** `ros-noetic-c30d.patch`；从上游源码重新搭建时，再把本仓库的 `src/` 放进 `catkin_ws/src` 并应用该补丁。随后执行：
 
    ```bash
    cd ~/catkin_ws
@@ -87,14 +87,15 @@ TF 主链：`map -> odom_combined -> base_footprint -> laser`（`base_footprint 
 
    `person_follow` 已经是标准 catkin 包，检测节点和跟随节点可以用 `rosrun` 或仓库内的 launch 文件启动。
 5. **建图与导航**：按[复刻流程](docs/bringup.md)完成底盘联调、里程计校准、gmapping 建图、地图保存和 move_base 导航；多点航点操作见[常用命令](docs/commands.md)。
-6. **人员跟随**：导出 YOLOv8n ONNX 模型后按[人员跟随](docs/person-follow.md)运行检测与跟随节点；没有模型时也可以先使用 HOG 版本验证控制链路。
+6. **人员跟随**：Release 快照已提供 `person_follow/models/yolov8n.onnx`；也可以按[人员跟随](docs/person-follow.md)中的命令从官方 `yolov8n.pt` 重新导出。没有模型时可以先使用 HOG 版本验证控制链路。
 
 ## 许可说明
 
 - 本仓库自有内容（`docs/`、`src/person_follow/`、`patches/`、`media/`、配置与文档）：**MIT License**，见 [LICENSE](LICENSE)。
 - `src/camsense_driver/`：来自上游开源项目（BSD 3-Clause，Copyright (c) 2020, Bram Fenijn），本项目在其基础上修复了无效回波处理，原 LICENSE 文件保留在包内。
-- 轮趣（WheelTEC）官方源码版权归轮趣所有：本仓库不包含、也不再分发其源码，只提供修改补丁；将补丁应用到你合法获取的官方源码后，仍需遵循官方许可。
-- YOLOv8n 权重与训练代码遵循 Ultralytics **AGPL-3.0**：本仓库不分发 `.pt`/`.onnx` 权重，请按[人员跟随](docs/person-follow.md#模型导出)自行导出。
+- Release 附件 `all_code-v1.0.0.zip` 含轮趣 ROS 包、Waterplus 插件和其他上游源码的**已验证快照**。这些文件不受本仓库根目录 MIT License 覆盖；请保留包内版权和许可证文件，并遵循各上游项目的许可条件。Release 快照中的 ROS 源码已经包含本项目对应修改，不能把同一份 `ros-noetic-c30d.patch` 再应用一次。
+- 轮趣 STM32 Keil 工程不包含在本仓库或 Release 附件中；本仓库只提供修改补丁，应用后仍需遵循官方许可。
+- `yolov8n.onnx` 是由 Ultralytics 官方 `yolov8n.pt` 导出的模型，随 Release 附件提供；模型及相关代码遵循 Ultralytics **AGPL-3.0**，不受本仓库 MIT License 覆盖。来源、导出命令和许可边界见[人员跟随](docs/person-follow.md#模型导出)及 Release 内的模型说明。
 
 ## 作者
 

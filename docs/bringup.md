@@ -87,7 +87,7 @@
 
 这一步让 ROS 节点通过串口稳定控制底盘，并把直行和原地旋转的里程计误差校准掉。做到连续运行 20 分钟以上无失控/断连即通过。详细操作步骤（Ubuntu/ROS 安装、驱动、键盘控制、测试命令）见 [ROS 环境搭建](ros-setup.md)。
 
-> 文中的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc` 使用轮趣官方 Noetic 源码 + 本仓库 `patches/` 目录的补丁（获取步骤见 README）；Camsense X1 驱动已包含在仓库 `src/camsense_driver/`。
+> 文中的 `turn_on_wheeltec_robot`、`wheeltec_robot_rc` 可以使用 Release 的 `all_code-v1.0.0.zip` 快照；也可以使用轮趣官方 Noetic 源码并应用本仓库 `patches/` 目录的补丁（获取步骤见 README）。Camsense X1 驱动已包含在仓库 `src/camsense_driver/`。
 
 - [x] Ubuntu 20.04.6、ROS Noetic 和 C30D 底盘节点正常启动
 - [x] USART3 为 115200、8N1，固定为 `/dev/wheeltec_controller`
